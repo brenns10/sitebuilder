@@ -2,3 +2,4 @@ site
 work
 config.py
 s3_website.yml
+__pycache__
