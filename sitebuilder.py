@@ -60,7 +60,13 @@ class GhpRepo(object):
         else:
             if os.path.exists(self.output):
                 shutil.rmtree(self.output)
-            shutil.copytree(self.local, self.output)
+            ignore = shutil.ignore_patterns(
+                # may have to include lots of stuff in here
+                '.git',
+                '.gitignore',
+                '.nojekyll'
+            )
+            shutil.copytree(self.local, self.output, ignore=ignore)
 
     def update_and_build(self):
         """Pull, and if the repo has changed, rebuild."""
