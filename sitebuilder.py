@@ -93,7 +93,7 @@ class GhpBuilder(object):
         self.repos = []
         for name, branch, path in repos:
             url = PATH.format(username=username, reponame=name)
-            localwork = os.path.join(self.work, path)
+            localwork = os.path.join(self.work, name)
             localbuild = os.path.join(self.site, path)
             self.repos.append(GhpRepo(url, localwork, localbuild, branch))
 
