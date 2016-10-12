@@ -43,6 +43,20 @@ And then navigate to http://localhost:8000/
 Any time you update a github pages repository, you can update it by simply
 running `python sitebuilder.py` again.
 
+Advanced Usage
+--------------
+
+Typically, running `python sitebuilder.py` will do what you need, but there are
+subcommands that can perform more fine grained control:
+
+- `dwim` - does the same thing as running with no subcommand. That is,
+  initialize if not already initialized, and build the site.
+- `init` - initialize repositories and build
+- `pull` - pull repositories, but don't build
+- `build` - pull and build out of date repositories
+- `rebuild` - build all repositories (don't pull)
+- `help` - show help text
+
 Deployment
 ----------
 
