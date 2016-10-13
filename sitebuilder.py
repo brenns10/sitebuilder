@@ -102,6 +102,8 @@ class GhpRepo(object):
         if self.pull():
             print('=> {}: was out of date'.format(self.name))
             self.build()
+            return True
+        return False
 
 
 class GhpBuilder(object):
@@ -173,8 +175,10 @@ class GhpBuilder(object):
 
         """
         if self.main and self.main.update_and_build():
+            print('Rebuilding other repos since they may have been clobbered.')
             for repo in self.repos:
                 repo.build()
+            print('Continuing to update other repos...')
 
     def build(self):
         """Normal build."""
