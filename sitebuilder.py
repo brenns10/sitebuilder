@@ -149,7 +149,7 @@ class GhpBuilder(object):
 
     def init(self):
         """Check out and build for the first time."""
-        self.initial_checkout()
+        self._initial_checkout()
         self.rebuild()
 
     def pull(self):
