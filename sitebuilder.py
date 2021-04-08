@@ -19,12 +19,13 @@ init - Initialize the site by pulling and running the first build.
 pull - Pull every repository (but do not build anything).
 rebuild - Rebuild the entire site (without pulling first).
 build - Pull each repository and rebuild if it updated.
+deploy - Push to S3 (this will never be done by dwim)
 help - Display this help text.
 """
 
 
-def run(args):
-    check_call(args, stdout=DEVNULL, stderr=DEVNULL)
+def run(args, **kwargs):
+    check_call(args, stdout=DEVNULL, stderr=DEVNULL, **kwargs)
 
 
 class GhpRepo(object):
@@ -205,6 +206,9 @@ class GhpBuilder(object):
             print('Updating your existing site.')
             self.build()
 
+    def deploy(self):
+        check_call(["s3_website", "push"])
+
 
 def help():
     print(HELPTEXT.format(sys.argv[0]))
@@ -212,14 +216,17 @@ def help():
 
 if __name__ == '__main__':
     import sys
-    from config import USERNAME, REPOS
+    from config import USERNAME, REPOS, PATH
     builder = GhpBuilder(USERNAME, REPOS)
+    os.environ["PATH"] = PATH + ":" + os.environ["PATH"]
     commands = {
         'init': builder.init,
         'build': builder.build,
         'rebuild': builder.rebuild,
         'dwim': builder.dwim,
         'pull': builder.pull,
+        'deploy': builder.deploy,
+        'push': builder.deploy,
         'help': help,
     }
     if len(sys.argv) <= 1:
