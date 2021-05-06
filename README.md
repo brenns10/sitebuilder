@@ -63,3 +63,23 @@ Deployment
 Although this project doesn't do much to assist with deployment, a good next
 step would be to use the `s3_website` gem to deploy your `site` folder to AWS
 and Cloudfront!
+
+Stupidity
+---------
+
+Ok, pretty much only works with ruby 2.7 or earlier. Java version needs 8. I
+have addressed the ruby issue by installing `ruby-2.7`, doing:
+
+    sudo ln -s /usr/bin/ruby{-2.7,}
+    sudo ln -s /usr/bin/gem{-2.7,}
+
+Then you can `gem install --user jekyll jekyll-paginate s3_website`. This allows
+your `jekyll build` to work and the sitebuilder commands work fine. For the
+Java version issue with `s3_website`, you need to set the old JVM first in your
+path:
+
+    PATH=/usr/lib/jvm/java-8-openjdk/jre/bin:$PATH s3_website push --dry-run
+    PATH=/usr/lib/jvm/java-8-openjdk/jre/bin:$PATH s3_website push
+
+Soon I'll be bundling all this stuff into a Docker image that I can freeze
+forever.
