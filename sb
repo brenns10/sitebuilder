@@ -1,0 +1,4 @@
+#!/bin/sh
+# wrap podman for simplicity, you could copy this to ~/.local/bin but need to be
+# in this directory, so maybe not
+podman run -p 4000:4000/tcp -v "$(pwd):/work" -w /work --rm -it sitebuilder "$@"
