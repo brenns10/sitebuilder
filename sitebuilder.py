@@ -218,9 +218,9 @@ def help():
 
 if __name__ == '__main__':
     import sys
-    from config import USERNAME, REPOS, PATH
+    sys.path.insert(0, os.getcwd())
+    from config import USERNAME, REPOS
     builder = GhpBuilder(USERNAME, REPOS)
-    os.environ["PATH"] = PATH + ":" + os.environ["PATH"]
     commands = {
         'init': builder.init,
         'build': builder.build,
