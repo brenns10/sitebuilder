@@ -1,85 +1,49 @@
 sitebuilder
 ===========
 
-This repository contains a simple Python tool for building all of your GitHub
-pages static sites at once, in a somewhat similar way to how it's done in GitHub
-pages.
+This repo contains the tools I use to build and deploy my website. I started my
+website using Github Pages, but quickly realized I prefer more customization:
+for example, being able to add plugins to Jekyll for LaTeX math, etc. I ended up
+switching to S3 + Cloudfront, which is great, except that I need to build and
+deploy the site manually.
 
-It's great if you have a bunch of stuff on GitHub pages, but you'd like to
-migrate to AWS (for SSL + custom domain reasons, perhaps).
+As I've changed computers (or just performed software upgrades), I've noticed
+that Jekyll, Ruby, Java, LaTeX, or something else will change and break my
+build, or just cause files to change slightly. I want my site to build
+consistently, and as reproducible as possible, so I've created these tools to
+ensure the site stays the same. There are two components:
+
+1. `sitebuilder.py` is a script which orchestrates several Github repositories
+   and branches. It can automatically pull them, notice updates, and regenerate
+   a site from them.
+2. `Dockerfile` builds a container which can run sitebuilder, as well as Jekyll,
+   LaTeX, and my website deployment tool (s3_website). For the most part I
+   intend to build this image and then reuse it for all my site builds.
 
 Usage
 -----
 
-You need to have Python 3, Ruby+Jekyll+github-pages gem installed.
+I run this with Podman, but it's pretty much the same with Docker. Soon I will
+push a tagged image to Docker Hub, but for now I build it manually: `podman
+build -t sitebuilder .`.
 
-Then, create a file called `config.py` containing info about your GitHub pages
-repositories.  Mine is given below as an example:
+Then, you can use any of the tools installed within the image like so:
 
-```python
-USERNAME = 'brenns10'
-REPOS = [
-    # (repo, branch, url)
-    ('brenns10.github.io', 'master', ''),
-    ('talks', 'gh-pages', 'talks/'),
-    ('notes', 'gh-pages', 'notes/'),
-    ('libstephen', 'gh-pages', 'libstephen/'),
-    ('cky', 'gh-pages', 'cky/'),
-    ('yams', 'gh-pages', 'yams/'),
-    ('nosj', 'gh-pages', 'nosj/'),
-]
+``` bash
+# Run sitebuilder -h
+podman run -p 4000:4000 -v $(pwd):/work -w /work --rm -it sitebuilder sitebuilder -h
+
+# Run jekyll
+podman run -p 4000:4000 -v $(pwd):/work -w /work --rm -it sitebuilder jekyll -h
+
+# Run s3_website
+podman run -p 4000:4000 -v $(pwd):/work -w /work --rm -it sitebuilder s3_website -h
 ```
 
-Finally, run `python sitebuilder.py` and the magic should happen. To view your
-site, you could:
+For the most part, I just use the sitebuilder command on its own, followed by
+`sitebuilder deploy`.
 
-```bash
-$ cd site
-$ python -m http.server
-```
+Should You Use This?
+--------------------
 
-And then navigate to http://localhost:8000/
-
-Any time you update a github pages repository, you can update it by simply
-running `python sitebuilder.py` again.
-
-Advanced Usage
---------------
-
-Typically, running `python sitebuilder.py` will do what you need, but there are
-subcommands that can perform more fine grained control:
-
-- `dwim` - does the same thing as running with no subcommand. That is,
-  initialize if not already initialized, and build the site.
-- `init` - initialize repositories and build
-- `pull` - pull repositories, but don't build
-- `build` - pull and build out of date repositories
-- `rebuild` - build all repositories (don't pull)
-- `help` - show help text
-
-Deployment
-----------
-
-Although this project doesn't do much to assist with deployment, a good next
-step would be to use the `s3_website` gem to deploy your `site` folder to AWS
-and Cloudfront!
-
-Stupidity
----------
-
-Ok, pretty much only works with ruby 2.7 or earlier. Java version needs 8. I
-have addressed the ruby issue by installing `ruby-2.7`, doing:
-
-    sudo ln -s /usr/bin/ruby{-2.7,}
-    sudo ln -s /usr/bin/gem{-2.7,}
-
-Then you can `gem install --user jekyll jekyll-paginate s3_website`. This allows
-your `jekyll build` to work and the sitebuilder commands work fine. For the
-Java version issue with `s3_website`, you need to set the old JVM first in your
-path:
-
-    PATH=/usr/lib/jvm/java-8-openjdk/jre/bin:$PATH s3_website push --dry-run
-    PATH=/usr/lib/jvm/java-8-openjdk/jre/bin:$PATH s3_website push
-
-Soon I'll be bundling all this stuff into a Docker image that I can freeze
-forever.
+No.
