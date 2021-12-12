@@ -23,21 +23,25 @@ ensure the site stays the same. There are two components:
 Usage
 -----
 
-I run this with Podman, but it's pretty much the same with Docker. Soon I will
-push a tagged image to Docker Hub, but for now I build it manually: `podman
-build -t sitebuilder .`.
+The prebuilt image is available [on Docker
+Hub](https://hub.docker.com/r/brenns10/sitebuilder). You can easily pull it:
+
+``` bash
+podman pull docker.io/brenns10/sitebuilder:latest
+# you could use Docker too, if you're into running as root :)
+```
 
 Then, you can use any of the tools installed within the image like so:
 
 ``` bash
 # Run sitebuilder -h
-podman run -p 4000:4000 -v $(pwd):/work -w /work --rm -it sitebuilder sitebuilder -h
+podman run -p 4000:4000 -v $(pwd):/work -w /work --rm -it docker.io/brenns10/sitebuilder sitebuilder -h
 
 # Run jekyll
-podman run -p 4000:4000 -v $(pwd):/work -w /work --rm -it sitebuilder jekyll -h
+podman run -p 4000:4000 -v $(pwd):/work -w /work --rm -it docker.io/brenns10/sitebuilder jekyll -h
 
 # Run s3_website
-podman run -p 4000:4000 -v $(pwd):/work -w /work --rm -it sitebuilder s3_website -h
+podman run -p 4000:4000 -v $(pwd):/work -w /work --rm -it docker.io/brenns10/sitebuilder s3_website -h
 ```
 
 For the most part, I just use the sitebuilder command on its own, followed by
