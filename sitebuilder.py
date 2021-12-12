@@ -59,6 +59,7 @@ class GhpRepo(object):
 
     def checkout(self):
         """Check out the repository."""
+        print("Cloning {}".format(self.name))
         run(['git', 'clone', '-b', self.branch, self.url, self.local])
 
     def current_commit(self):
@@ -150,6 +151,7 @@ class GhpBuilder(object):
 
     def init(self):
         """Check out and build for the first time."""
+        print("Initializing the site!")
         self._initial_checkout()
         self.rebuild()
 
